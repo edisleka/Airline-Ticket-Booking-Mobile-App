@@ -1,5 +1,6 @@
 import { COLORS, TYPOGRAPHY } from '@/constants/app.constants'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useOnboardingStore } from '@store/onboarding-store'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useEffect } from 'react'
 import { Dimensions, Pressable, Text, View } from 'react-native'
@@ -22,6 +23,12 @@ export default function OnboardingScreen() {
   const subtitleOpacity = useSharedValue(0)
   const buttonScale = useSharedValue(0)
   const { top, bottom } = useSafeAreaInsets()
+  const { completeOnboarding } = useOnboardingStore()
+
+  const handleCompleteOnboarding = () => {
+    completeOnboarding(true)
+    console.log('completeOnboarding pressed')
+  }
 
   useEffect(() => {
     // Animate logo entrance
@@ -91,26 +98,26 @@ export default function OnboardingScreen() {
         {/* Floating circles */}
         <Animated.View
           className='absolute w-32 h-32 bg-primary-500/10 rounded-full'
-          style={[
-            { top: height * 0.1, right: -width * 0.15 },
-            { transform: [{ rotate: '45deg' }] },
-          ]}
+          style={{
+            top: height * 0.1,
+            right: -width * 0.15,
+          }}
           entering={FadeInUp.duration(1000).delay(800)}
         />
         <Animated.View
           className='absolute w-20 h-20 bg-accent-blue/20 rounded-full'
-          style={[
-            { bottom: height * 0.3, left: -width * 0.1 },
-            { transform: [{ rotate: '-30deg' }] },
-          ]}
+          style={{
+            bottom: height * 0.3,
+            left: -width * 0.1,
+          }}
           entering={FadeInUp.duration(1200).delay(1000)}
         />
         <Animated.View
           className='absolute w-16 h-16 bg-primary-400/15 rounded-full'
-          style={[
-            { top: height * 0.4, right: width * 0.05 },
-            { transform: [{ rotate: '60deg' }] },
-          ]}
+          style={{
+            top: height * 0.4,
+            right: width * 0.05,
+          }}
           entering={FadeInUp.duration(800).delay(1200)}
         />
       </View>
@@ -119,38 +126,40 @@ export default function OnboardingScreen() {
         {/* Header Section */}
         <View className='flex-1 justify-center items-center'>
           {/* Logo Section */}
-          <Animated.View
-            className='items-center mb-12 px-6'
-            style={logoAnimatedStyle}
-          >
-            <View className='relative'>
-              <LinearGradient
-                colors={[
-                  COLORS.primary[500],
-                  COLORS.primary[600],
-                  COLORS.accent.blue,
-                ]}
-                className='w-20 h-20 rounded-3xl items-center justify-center mb-4'
-                style={{
-                  shadowColor: COLORS.primary[500],
-                  shadowOffset: { width: 0, height: 8 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 16,
-                  elevation: 16,
-                }}
-              >
-                <MaterialCommunityIcons
-                  name='airplane-takeoff'
-                  size={32}
-                  color='white'
-                />
-              </LinearGradient>
+          <View className='items-center mb-12 px-6'>
+            <Animated.View style={logoAnimatedStyle}>
+              <View className='relative'>
+                <LinearGradient
+                  colors={[
+                    COLORS.primary[500],
+                    COLORS.primary[600],
+                    COLORS.accent.blue,
+                  ]}
+                  className='w-20 h-20 rounded-3xl items-center justify-center mb-4'
+                  style={{
+                    shadowColor: COLORS.primary[500],
+                    shadowOffset: { width: 0, height: 8 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 16,
+                    elevation: 16,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name='airplane-takeoff'
+                    size={32}
+                    color='white'
+                  />
+                </LinearGradient>
 
-              {/* Glow effect */}
-              <View className='absolute inset-0 w-20 h-20 rounded-3xl bg-primary-500/30 blur-xl' />
-            </View>
+                {/* Glow effect */}
+                <View className='absolute inset-0 w-20 h-20 rounded-3xl bg-primary-500/30 blur-xl' />
+              </View>
+            </Animated.View>
 
-            <Animated.View entering={FadeInDown.duration(600).delay(400)}>
+            <Animated.View
+              entering={FadeInDown.duration(600).delay(400)}
+              className='flex-row items-center gap-2'
+            >
               <Text className='text-white text-3xl font-bold mb-1'>BETTER</Text>
               <Text
                 className='text-3xl font-bold italic'
@@ -159,50 +168,54 @@ export default function OnboardingScreen() {
                 FLY
               </Text>
             </Animated.View>
-          </Animated.View>
+          </View>
 
           {/* Main Content */}
           <View className='items-center max-w-sm px-6'>
-            <Animated.View style={titleAnimatedStyle} className='mb-6'>
-              <Text
-                className='text-center text-4xl font-bold leading-tight mb-2'
-                style={{
-                  color: COLORS.neutral[50],
-                  fontSize: TYPOGRAPHY.fontSize['4xl'],
-                  lineHeight:
-                    TYPOGRAPHY.lineHeight.tight * TYPOGRAPHY.fontSize['4xl'],
-                }}
-              >
-                Your Journey
-              </Text>
-              <Text
-                className='text-center text-4xl font-bold leading-tight'
-                style={{
-                  color: COLORS.primary[400],
-                  fontSize: TYPOGRAPHY.fontSize['4xl'],
-                  lineHeight:
-                    TYPOGRAPHY.lineHeight.tight * TYPOGRAPHY.fontSize['4xl'],
-                }}
-              >
-                Starts Here
-              </Text>
-            </Animated.View>
+            <View className='mb-6'>
+              <Animated.View style={titleAnimatedStyle}>
+                <Text
+                  className='text-center text-4xl font-bold leading-tight mb-2'
+                  style={{
+                    color: COLORS.neutral[50],
+                    fontSize: TYPOGRAPHY.fontSize['4xl'],
+                    lineHeight:
+                      TYPOGRAPHY.lineHeight.tight * TYPOGRAPHY.fontSize['4xl'],
+                  }}
+                >
+                  Your Journey
+                </Text>
+                <Text
+                  className='text-center text-4xl font-bold leading-tight'
+                  style={{
+                    color: COLORS.primary[400],
+                    fontSize: TYPOGRAPHY.fontSize['4xl'],
+                    lineHeight:
+                      TYPOGRAPHY.lineHeight.tight * TYPOGRAPHY.fontSize['4xl'],
+                  }}
+                >
+                  Starts Here
+                </Text>
+              </Animated.View>
+            </View>
 
-            <Animated.View style={subtitleAnimatedStyle} className='mb-12'>
-              <Text
-                className='text-center leading-relaxed'
-                style={{
-                  color: COLORS.neutral[300],
-                  fontSize: TYPOGRAPHY.fontSize.lg,
-                  lineHeight:
-                    TYPOGRAPHY.lineHeight.relaxed * TYPOGRAPHY.fontSize.lg,
-                }}
-              >
-                Book flights effortlessly with our smart search engine. Compare
-                prices, find the best deals, and travel the world with
-                confidence.
-              </Text>
-            </Animated.View>
+            <View className='mb-12'>
+              <Animated.View style={subtitleAnimatedStyle}>
+                <Text
+                  className='text-center leading-relaxed'
+                  style={{
+                    color: COLORS.neutral[300],
+                    fontSize: TYPOGRAPHY.fontSize.lg,
+                    lineHeight:
+                      TYPOGRAPHY.lineHeight.relaxed * TYPOGRAPHY.fontSize.lg,
+                  }}
+                >
+                  Book flights effortlessly with our smart search engine.
+                  Compare prices, find the best deals, and travel the world with
+                  confidence.
+                </Text>
+              </Animated.View>
+            </View>
           </View>
         </View>
 
@@ -219,6 +232,7 @@ export default function OnboardingScreen() {
                 shadowRadius: 16,
                 elevation: 16,
               }}
+              onPress={handleCompleteOnboarding}
             >
               <LinearGradient
                 colors={[

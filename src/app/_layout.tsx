@@ -1,9 +1,13 @@
 import '@root/global.css'
+import { useOnboardingStore } from '@store/onboarding-store'
 import { Stack } from 'expo-router'
 
 export default function RootLayout() {
-  const showOnboarding = true
-  const showAuth = false
+  const { hasCompletedOnboarding } = useOnboardingStore()
+  // console.log('hasCompletedOnboarding', hasCompletedOnboarding)
+
+  const showOnboarding = !hasCompletedOnboarding
+  const showAuth = hasCompletedOnboarding
   const showProtected = false
 
   return (
