@@ -1,9 +1,5 @@
-import { Text, View } from 'react-native'
+import Home from '@screens/protected/Home'
 
 export default function HomeScreen() {
-  return (
-    <View className='flex-1 items-center justify-center bg-white'>
-      <Text className='text-xl font-bold text-blue-500'>Home Screen</Text>
-    </View>
-  )
+  return <Home />
 }

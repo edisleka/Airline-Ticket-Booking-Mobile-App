@@ -7,8 +7,8 @@ export default function RootLayout() {
   // console.log('hasCompletedOnboarding', hasCompletedOnboarding)
 
   const showOnboarding = !hasCompletedOnboarding
-  const showAuth = hasCompletedOnboarding
-  const showProtected = false
+  const showAuth = false
+  const showProtected = hasCompletedOnboarding
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
