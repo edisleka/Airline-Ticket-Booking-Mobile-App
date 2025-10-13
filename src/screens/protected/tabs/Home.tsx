@@ -7,6 +7,7 @@ import Header from '@components/protected/home/Header'
 import LocationInput from '@components/protected/home/location-input'
 import { TripOption } from '@components/protected/home/trip-option'
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'
+import { router } from 'expo-router'
 import { useState } from 'react'
 import {
   ActivityIndicator,
@@ -86,7 +87,7 @@ export default function Home() {
                 : 'Departure City'
             }
             value=''
-            onPress={() => {}}
+            onPress={() => router.push('/departure')}
           />
 
           {/* Destination City Input */}
