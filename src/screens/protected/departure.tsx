@@ -1,19 +1,64 @@
+import { apiToken } from '@/api/api'
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
+import axios, { isAxiosError } from 'axios'
 import { useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { FlatList, Pressable, Text, TextInput, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+interface Airport {
+  id: string
+  name: string
+  iataCode: string
+}
+
 export default function Departure() {
   const [searchInput, setSearchInput] = useState('')
-  const [autoCompleteResults, setAutoCompleteResults] = useState([])
+  const [autoCompleteResults, setAutoCompleteResults] = useState<Airport[]>([])
 
   const { top } = useSafeAreaInsets()
   const router = useRouter()
+  const debounceTimerRef = useRef<number | null>(null)
 
-  const handleInputSearch = (value: string) => {
-    setSearchInput(value)
-  }
+  const autoCompleteSearch = useCallback(async (searchValue: string) => {
+    if (!searchValue.trim()) {
+      setAutoCompleteResults([])
+      return
+    }
+
+    try {
+      const headers = {
+        Authorization: `Bearer ${apiToken}`,
+      }
+
+      const url = `https://test.api.amadeus.com/v1/reference-data/locations?subType=AIRPORT&keyword=${searchValue}`
+
+      const response = await axios.get(url, { headers })
+
+      setAutoCompleteResults(response.data.data)
+    } catch (error: unknown) {
+      if (isAxiosError(error) && error.response?.status === 401) {
+        console.log('Rate limit exceeded. Please try again later.')
+      }
+
+      console.error(error)
+    }
+  }, [])
+
+  const handleInputSearch = useCallback(
+    (value: string) => {
+      setSearchInput(value)
+
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+      }
+
+      debounceTimerRef.current = setTimeout(() => {
+        autoCompleteSearch(value)
+      }, 500)
+    },
+    [autoCompleteSearch]
+  )
 
   return (
     <View className='flex-1 items-center bg-[#F5F7FA]'>
